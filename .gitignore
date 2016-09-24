@@ -1,0 +1,9 @@
+*.vcxproj
+*.filters
+*.vmps.xml
+*.a
+*.buildinfo
+*.hex
+*.elf
+*.d
+*.o
