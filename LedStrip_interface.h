@@ -39,7 +39,7 @@ private:
 		}
 		show();
 		for (uint16_t led_id = 0; led_id < numPixels() + 15; led_id++) {
-			delay(100);
+			delay(20);
 			//R
 			if (led_id < numPixels()) {
 				RGB_stack[led_id][0] = 100;
@@ -63,9 +63,9 @@ private:
 			}
 			show();
 		}
-		delay(100);
+		delay(20);
 		for (uint16_t led_id = 0; led_id < numPixels(); led_id++) {
-			delay(50);
+			delay(20);
 			shift_RGB_stack(1, 0, 0, 0);
 			show_full_RGB_stack();
 		}
@@ -79,7 +79,7 @@ private:
 		Serial.print("  B:  ");  Serial.print(int(RGB_stack[px][2]));
 		Serial.println("");
 	}
-
+	/*
 	void shift_RGB_stack(uint16_t steps, uint16_t new_R, uint16_t new_G, uint16_t new_B) {
 		//shifting
 		for (uint16_t led_id = steps; led_id < numPixels(); led_id++) {
@@ -100,13 +100,8 @@ private:
 			}
 		}
 	}
-
-	void show_full_RGB_stack() {
-		for (uint16_t led_id = 0; led_id < numPixels(); led_id++) {
-			setPixelColor(led_id, Color(RGB_stack[led_id][0], RGB_stack[led_id][1], RGB_stack[led_id][2]));
-		}
-		show();
-	}
+	*/
+	
 public:
 	LedStrip_interface() : Adafruit_NeoPixel(NUM_OF_LEDS, STRIP_PIN, NEO_GRB + NEO_KHZ800) {
 		begin();
@@ -117,6 +112,38 @@ public:
 		Serial.println("LED strip initialized");
 	}
 
+	void set_one_LED_in_stack(uint16_t LED_id, uint16_t color_R, uint16_t color_G, uint16_t color_B) {
+		RGB_stack[LED_id][0] = color_R;
+		RGB_stack[LED_id][1] = color_G;
+		RGB_stack[LED_id][2] = color_B;
+
+	}
+	void shift_RGB_stack(uint16_t steps, uint16_t new_R, uint16_t new_G, uint16_t new_B) {
+		//shifting
+		for (uint16_t led_id = steps; led_id < numPixels(); led_id++) {
+			t_RGB_stack[led_id][0] = RGB_stack[led_id - steps][0];
+			t_RGB_stack[led_id][1] = RGB_stack[led_id - steps][1];
+			t_RGB_stack[led_id][2] = RGB_stack[led_id - steps][2];
+		}
+		//fill empty space
+		for (uint16_t led_id = 0; led_id < steps + 1; led_id++) {
+			t_RGB_stack[led_id][0] = 0;
+			t_RGB_stack[led_id][1] = 0;
+			t_RGB_stack[led_id][2] = 0;
+		}
+		//store new values
+		for (uint16_t led_id = 0; led_id < numPixels(); led_id++) {
+			for (uint16_t c = 0; c < 3; c++) {
+				RGB_stack[led_id][c] = t_RGB_stack[led_id][c];
+			}
+		}
+	}
+	void show_full_RGB_stack() {
+		for (uint16_t led_id = 0; led_id < numPixels(); led_id++) {
+			setPixelColor(led_id, Color(RGB_stack[led_id][0], RGB_stack[led_id][1], RGB_stack[led_id][2]));
+		}
+		show();
+	}
 	void parseCmd() {
 		if (Serial.available()) {
 			msg = Serial.readString();
