@@ -3,13 +3,15 @@
 LedStrip_interface strip = LedStrip_interface();
 byte received_value[8];
 bool flag_receive_strip_codes;
-
+uint16_t num_of_leds = 30;
 void setup()
 {
+	strip.init();
+	strip.set_one_LED_in_stack(15, 50, 0, 0);
+	strip.show_full_RGB_stack();
 	flag_receive_strip_codes = false;
 	Serial.begin(9600);
 	Serial.println("Hi, I am a fancy interface for addressable LED strip");
-	strip.init();
 
 	strip.set_one_LED_in_stack(15, 50, 0, 0);
 	strip.show_full_RGB_stack();
@@ -33,6 +35,7 @@ void loop()
 
 		// sending the received bytes to the parser
 		strip.parse_strip_codes(received_value);
+
 		
 		
 		

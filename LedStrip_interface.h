@@ -12,7 +12,7 @@
 #define MAX(a,b) a>b ? a:b
 #define MIN(a,b) a<b ? a:b
 
-#define NUM_OF_LEDS 30
+#define NUM_OF_LEDS 60
 #define STRIP_PIN 6
 #define MSG_PARSER_COUNTER_LIMIT 1000
 
@@ -155,8 +155,8 @@ public:
 		}
 		// reset wait flag
 		if (received_value[0] >= NUM_OF_LEDS) {
-			setPixelColor(20, Color(50, 0, 0));
-			show();
+			//setPixelColor(20, Color(50, 0, 0));
+			//show();
 			flag_waiting_for_strip_codes = false;
 		}
 		// set wait flag (overrite reset)
